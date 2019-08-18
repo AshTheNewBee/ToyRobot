@@ -1,9 +1,14 @@
-let position = {}
+let tableTop = { x: 5, y: 5}, 
+    position = { x: 0, y: 0, f: 'N'}
 
 module.exports = {
-
     createTableTop: (xVal, yVal) => {
+        tableTop = { x: xVal, y: yVal }
         return { x: xVal, y: yVal }
+    },
+
+    getTableTop: () => {
+        return tableTop
     },
 
     updateRobotPosition: (xVal, yVal, facing) => {
