@@ -1,5 +1,5 @@
 let tableTop = { x: 5, y: 5}, 
-    position = { x: 0, y: 0, f: 'N'}
+    position = { x: 0, y: 0, f: 'NORTH'}
 
 module.exports = {
     createTableTop: (xVal, yVal) => {

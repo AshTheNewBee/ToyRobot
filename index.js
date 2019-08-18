@@ -13,4 +13,4 @@ app.listen(port, () => {
 });
 
 let robot = require('./src/controller/robotSimlator')
-robot.move()
+console.log(robot.move())

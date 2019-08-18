@@ -7,11 +7,11 @@ describe('TableTop creation', () => {
     })
 
     it('should return the current position of the robot', () => {
-        expect(tableTop.updateRobotPosition(0, 1, 'N')).to.deep.include({x: 0, y: 1, f: 'N'})
+        expect(tableTop.updateRobotPosition(0, 1, 'NORTH')).to.deep.include({x: 0, y: 1, f: 'NORTH'})
     })
 
     it('should get the position of robot', () => {
-        tableTop.updateRobotPosition(1, 1, 'S')
-        expect(tableTop.getRobotPosition()).to.deep.include({x: 1, y: 1, f: 'S'})
+        tableTop.updateRobotPosition(1, 1, 'SOUTH')
+        expect(tableTop.getRobotPosition()).to.deep.include({x: 1, y: 1, f: 'SOUTH'})
     })
 })
