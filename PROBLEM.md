@@ -94,3 +94,17 @@ production. It is not required to provide any graphical output showing the
 movement of the toy robot.
 
 Please do not put your name in any of the submitted code since this makes it harder for us to review your submission anonymously.
+
+
+
+
+
+
+
+
+The assessment criteria for us is as follows:
+
+Knowledge of chosen development language – any language is fine, go with your strength
+Design and Architecture – OOP, Functional Programming or other
+Testing – TDD if you can, if not make sure you have good test coverage (Unit tests, Integration tests etc.)
+Documentation – A good README file, comments in the code etc.
