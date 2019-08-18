@@ -4,7 +4,7 @@ const robotSimulator = require('./../../src/controller/robotSimlator')
 const tableTop = require('./../../src/model/tableTop')
 
 describe('RobotSimulator', () => {
-
+    
     //--------------------------- MOVE ------------------------------------------------
     it('should place the robot to the valid X, Y and Facing direction', () => { 
         let tableTopStub = sinon.stub(tableTop, 'getTableTop').callsFake(function fakeFn() {
@@ -82,5 +82,23 @@ describe('RobotSimulator', () => {
         })
         expect(robotSimulator.report()).to.deep.include({ x: 4, y: 3, f: 'NORTH'})
         positionStub.restore()
+    })
+
+    //--------------------------- PLACE ------------------------------------------------
+    it('should place the robot in valid position', () => {
+        let tableTopStub = sinon.stub(tableTop, 'getTableTop').callsFake(function fakeFn() {
+            return {x: 5, y: 5 }
+        })
+        let positionStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
+            return {x: 0, y: 0, f: 'SOUTH'}
+        })
+
+        expect(robotSimulator.place(1, 2, 'EAST')).to.deep.include({ x: 1, y: 2, f: 'EAST'})
+        expect(robotSimulator.place(1, 2, 'JIBrish')).to.equal(false)
+        expect(robotSimulator.place(122, 2, 'JIBrish')).to.equal(false)
+        expect(robotSimulator.place(2, '2w2', 'JIBrish')).to.equal(false)
+
+        positionStub.restore()
+        tableTopStub.restore()
     })
 })

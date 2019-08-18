@@ -1,23 +1,30 @@
 const tableTop = require('../../src/model/tableTop')
 const { LEFT, RIGHT, NORTH, SOUTH, EAST, WEST } = require('../../src/util/consts')
+const { isValidDirection, isValidMove } = require('../../src/util/validation')
 
 module.exports = {
+    place: (xVal, yVal, facing) => {
+        let isValidValue = isValidDirection(facing) && isValidMove(facing) && { x: xVal, y: yVal, f: facing }
+        isValidValue && tableTop.updateRobotPosition(isValidValue)
+        return isValidValue
+    },
+
     move: () => {
         let newPositon = tableTop.getRobotPosition()
         let currentPosition = tableTop.getRobotPosition()
        
         switch(currentPosition.f){
             case 'NORTH':
-                newPositon.y = currentPosition.y < tableTop.getTableTop().y ? currentPosition.y + 1 : currentPosition.y
+                newPositon.y = isValidMove(NORTH) ? currentPosition.y + 1 : currentPosition.y
                 break
             case 'EAST':
-                newPositon.x = currentPosition.x < tableTop.getTableTop().x ? currentPosition.x + 1 : currentPosition.x
+                newPositon.x = isValidMove(EAST) ? currentPosition.x + 1 : currentPosition.x
                 break
             case 'WEST':
-                newPositon.x = currentPosition.x > 0 ? currentPosition.x - 1 : currentPosition.x
+                newPositon.x = isValidMove(WEST) ? currentPosition.x - 1 : currentPosition.x
                 break
             case 'SOUTH':
-                newPositon.y = currentPosition.y > 0 ? currentPosition.y - 1 : currentPosition.y
+                newPositon.y = isValidMove(SOUTH) ? currentPosition.y - 1 : currentPosition.y
                 break
             default:
                 newPositon = currentPosition
