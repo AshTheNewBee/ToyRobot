@@ -1,20 +1,24 @@
 const readline = require('readline');
 
-const readLineInterface = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+})
 
 module.exports = {
-    readLine: () => {
+    readIterate: (promptQ) => {
         return new Promise((resolve, reject) => {
             try{
-                readLineInterface.setPrompt('Enter a valid move (to end type END): ')
-                readLineInterface.prompt()
-                readLineInterface.on('line', (line) => {
-                    line.toUpperCase() === "END" && readLineInterface.close()
-                    readLineInterface.prompt()
-                    resolve(line)
+                rl.setPrompt(promptQ)
+                rl.prompt()
+                rl.on('line', (line) => {
+                    if(line.toUpperCase() === "END"){
+                        line.toUpperCase() === "END" && rl.close()
+                    }else{
+                        rl.prompt()
+                        return(line)
+                    }
+                    
                 }).on('close',function(){
                     process.exit(0);
                 });

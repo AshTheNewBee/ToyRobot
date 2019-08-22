@@ -4,6 +4,10 @@ const robotSimulator = require('./../../src/controller/robotSimlator')
 const tableTop = require('./../../src/model/tableTop')
 
 describe('RobotSimulator', () => {
+    after(function () {
+        sinon.tableTop && sinon.tableTop.getTableTop().restore();
+        sinon.tableTop && sinon.tableTop.getRobotPosition().restore();
+    });
     
     //--------------------------- MOVE ------------------------------------------------
     it('should place the robot to the valid X, Y and Facing direction', () => { 
@@ -14,25 +18,25 @@ describe('RobotSimulator', () => {
         let positionStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
             return {x: 0, y: 0, f: 'NORTH'}
         })
-        expect(robotSimulator.move()).to.deep.include({ x: 0, y: 1, f: 'NORTH' })
+        expect(robotSimulator.MOVE()).to.deep.include({ x: 0, y: 1, f: 'NORTH' })
         positionStub.restore()
 
         positionStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
             return {x: 0, y: 0, f: 'EAST'}
         })
-        expect(robotSimulator.move()).to.deep.include({ x: 1, y: 0, f: 'EAST' })
+        expect(robotSimulator.MOVE()).to.deep.include({ x: 1, y: 0, f: 'EAST' })
         positionStub.restore()
 
         positionStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
             return {x: 0, y: 0, f: 'WEST'}
         })
-        expect(robotSimulator.move()).to.deep.include({ x: 0, y: 0, f: 'WEST' })
+        expect(robotSimulator.MOVE()).to.deep.include({ x: 0, y: 0, f: 'WEST' })
         positionStub.restore()
 
         positionStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
             return {x: 0, y: 0, f: 'SOUTH'}
         })
-        expect(robotSimulator.move()).to.deep.include({ x: 0, y: 0, f: 'SOUTH' })
+        expect(robotSimulator.MOVE()).to.deep.include({ x: 0, y: 0, f: 'SOUTH' })
         positionStub.restore()
         tableTopStub.restore()
     })
@@ -47,7 +51,7 @@ describe('RobotSimulator', () => {
             return {x: 5, y: 5 }
         })
         
-        expect(robotSimulator.move()).to.deep.include({ x: 0, y: 5, f: 'NORTH' })
+        expect(robotSimulator.MOVE()).to.deep.include({ x: 0, y: 5, f: 'NORTH' })
         positionStub.restore()
         tableTopStub.restore()
     })
@@ -58,8 +62,11 @@ describe('RobotSimulator', () => {
         let positionStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
             return {x: 1, y: 1, f: 'NORTH'}
         })
+        
 
-        expect(robotSimulator.left()).to.deep.include({ x: 1, y: 1, f: 'WEST'})
+        console.log(robotSimulator.LEFT(), '++++')
+        //expect(robotSimulator.LEFT()).to.deep.include({ x: 1, y: 1, f: 'WEST'})
+        expect(updateRobotPosition).toHaveBeenCalled();
         positionStub.restore()
     })
 

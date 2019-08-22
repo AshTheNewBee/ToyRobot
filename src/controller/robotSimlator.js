@@ -3,13 +3,24 @@ const { LEFT, RIGHT, NORTH, SOUTH, EAST, WEST } = require('../../src/util/consts
 const { isValidDirection, isValidMove } = require('../../src/util/validation')
 
 module.exports = {
-    place: (xVal, yVal, facing) => {
-        let isValidValue = isValidDirection(facing) && isValidMove(facing) && { x: xVal, y: yVal, f: facing }
-        isValidValue && tableTop.updateRobotPosition(isValidValue)
-        return isValidValue
+     /**************
+     * @PLACE
+     *  Place the robot into given position of x, y and facing direction
+     *  calls updateRobotPosition to place the robot into given position
+     **************/
+    PLACE: (xVal, yVal, facing) => {
+        console.log('--- PLACE ----')
+        tableTop.updateRobotPosition(xVal, yVal, facing)
     },
 
-    move: () => {
+     /**************
+     * @MOVE
+     *  validates the move to be taken from the current position
+     *  if it's a valid move, moves the robot one unit towards the facing direction
+     *  if the move is invalid, will not move the robot
+     **************/
+    MOVE: () => {
+        console.log('--- MOVE ----')
         let newPositon = tableTop.getRobotPosition()
         let currentPosition = tableTop.getRobotPosition()
        
@@ -30,21 +41,17 @@ module.exports = {
                 newPositon = currentPosition
         }
        
-        tableTop.updateRobotPosition(newPositon)
-        return newPositon
+        //newPositon.X || newPositon.Y && 
+        tableTop.updateRobotPosition(currentPosition.x, currentPosition.y, newPositon.f)
     },
 
-    left: () => {
-        return module.exports.rotate(LEFT)
-    },
-
-    right: () => {
-        return module.exports.rotate(RIGHT)
-    },
-
-    rotate: (dir) => {
+     /**************
+     * @rotate
+     *  Rotates the robot 90 degrees into given direction from the currently facing direction
+     *  and update the current robot position
+     **************/
+    ROTATE: (dir) => {
         let newDir, currentPosition = tableTop.getRobotPosition()
-        let newPositon = tableTop.getRobotPosition()
 
         switch(currentPosition.f){
             case 'NORTH':
@@ -62,13 +69,14 @@ module.exports = {
             default:
                 newDir = currentPosition.f
         }
-
-        newPositon.f = newDir
-        tableTop.updateRobotPosition(newPositon)
-        return newPositon
+        tableTop.updateRobotPosition(currentPosition.x, currentPosition.y, newDir)
     },
 
-    report: () => {
+     /**************
+     * @report
+     *  logs the current robot position
+     **************/
+    REPORT: () => {
         return tableTop.getRobotPosition()
     }
 }

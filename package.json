@@ -21,6 +21,7 @@
     "sinon": "^7.4.1"
   },
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "readline-promise": "^1.0.4"
   }
 }

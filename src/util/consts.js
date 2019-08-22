@@ -9,5 +9,11 @@ module.exports = {
 
 //Rotating directions
   LEFT : 'LEFT',
-  RIGHT : 'RIGHT'
+  RIGHT : 'RIGHT',
+
+//Commands
+  MOVE: 'MOVE',
+  PLACE: 'PLACE',
+  REPORT: 'REPORT',
+  ROTATE: 'ROTATE'
 }
