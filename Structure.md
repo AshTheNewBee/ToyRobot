@@ -46,13 +46,14 @@ MODEL (State management DB)
 
 VIEW
     - InputReader
+    - FileReader
 
 
 CONTROLLER
     - RobotSimulator
         - Place
         - Move
-        - Left | Right
+        - Rotate
         - Report
 
 
@@ -60,9 +61,10 @@ Util
     - Move Validator
         - isValidMove
         - validateFirstCall
-    - input
+  
+    - input XXXXXXXXXXXXXXXXXXXXXXXXX
         - isValidInput
-    - File
+    - File XXXXXXXXXXXXXXXXXXXXXXXXX
         - upload
         - read
 

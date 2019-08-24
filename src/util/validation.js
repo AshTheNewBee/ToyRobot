@@ -33,7 +33,6 @@ module.exports = {
             : direction === SOUTH ? currentPosition.y > 0 : false
             
         !isValidMove && console.log('Invalid Move')
-            
         return isValidMove
     },
 
@@ -43,10 +42,11 @@ module.exports = {
      *  if the current direction does not exceed the length/width of the table top
      *  return true else return false
      **************/
-    isValidPlace: (x, y) => {
+    isValidPlace: (x, y, f) => {
         let tableTopLength = tableTop.getTableTop()
         let result = y < tableTopLength.y && x < tableTopLength.x
         !result && console.log('exceeds tabletop length of ', tableTop.getTableTop())
+        result = module.exports.isValidMove(f)
         return result
     },
 

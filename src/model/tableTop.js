@@ -29,6 +29,7 @@ module.exports = {
         position.y = yVal
         position.f = facing
         console.log(' Current position: ', position)
+        return position
     },
 
     /**************

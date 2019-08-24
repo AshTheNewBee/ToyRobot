@@ -5,38 +5,45 @@ const tableTop = require('./../../src/model/tableTop')
 
 describe('RobotSimulator', () => {
     after(function () {
-        sinon.tableTop && sinon.tableTop.getTableTop().restore();
-        sinon.tableTop && sinon.tableTop.getRobotPosition().restore();
-    });
+        sinon.tableTop && sinon.tableTop.getTableTop().restore()
+        sinon.tableTop && sinon.tableTop.getRobotPosition().restore()
+    })
     
     //--------------------------- MOVE ------------------------------------------------
-    it('should place the robot to the valid X, Y and Facing direction', () => { 
+    it('should move the toy robot one unit forward in the direction it is currently facing', () => { 
+        sinon.tableTop && sinon.tableTop.getTableTop().restore()
+        sinon.tableTop && sinon.tableTop.getRobotPosition().restore()
         let tableTopStub = sinon.stub(tableTop, 'getTableTop').callsFake(function fakeFn() {
             return {x: 5, y: 5 }
         })
 
+        //Move NORTH
         let positionStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
             return {x: 0, y: 0, f: 'NORTH'}
         })
         expect(robotSimulator.MOVE()).to.deep.include({ x: 0, y: 1, f: 'NORTH' })
         positionStub.restore()
 
+        //Move EAST
         positionStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
             return {x: 0, y: 0, f: 'EAST'}
         })
         expect(robotSimulator.MOVE()).to.deep.include({ x: 1, y: 0, f: 'EAST' })
         positionStub.restore()
 
+        ////Move WEST
         positionStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
             return {x: 0, y: 0, f: 'WEST'}
         })
         expect(robotSimulator.MOVE()).to.deep.include({ x: 0, y: 0, f: 'WEST' })
         positionStub.restore()
 
+        //Move SOUTH
         positionStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
             return {x: 0, y: 0, f: 'SOUTH'}
         })
         expect(robotSimulator.MOVE()).to.deep.include({ x: 0, y: 0, f: 'SOUTH' })
+        
         positionStub.restore()
         tableTopStub.restore()
     })
@@ -63,10 +70,7 @@ describe('RobotSimulator', () => {
             return {x: 1, y: 1, f: 'NORTH'}
         })
         
-
-        console.log(robotSimulator.LEFT(), '++++')
-        //expect(robotSimulator.LEFT()).to.deep.include({ x: 1, y: 1, f: 'WEST'})
-        expect(updateRobotPosition).toHaveBeenCalled();
+        expect(robotSimulator.ROTATE('LEFT')).to.be.equal('WEST')
         positionStub.restore()
     })
 
@@ -77,7 +81,7 @@ describe('RobotSimulator', () => {
             return {x: 1, y: 1, f: 'NORTH'}
         })
 
-        expect(robotSimulator.right()).to.deep.include({ x: 1, y: 1, f: 'EAST'})
+        expect(robotSimulator.ROTATE('RIGHT')).to.be.equal('EAST')
         positionStub.restore()
     })
 
@@ -87,7 +91,8 @@ describe('RobotSimulator', () => {
         let positionStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
             return {x: 4, y: 3, f: 'NORTH'}
         })
-        expect(robotSimulator.report()).to.deep.include({ x: 4, y: 3, f: 'NORTH'})
+
+        expect(robotSimulator.REPORT()).to.deep.include({ x: 4, y: 3, f: 'NORTH'})
         positionStub.restore()
     })
 
@@ -100,10 +105,10 @@ describe('RobotSimulator', () => {
             return {x: 0, y: 0, f: 'SOUTH'}
         })
 
-        expect(robotSimulator.place(1, 2, 'EAST')).to.deep.include({ x: 1, y: 2, f: 'EAST'})
-        expect(robotSimulator.place(1, 2, 'JIBrish')).to.equal(false)
-        expect(robotSimulator.place(122, 2, 'JIBrish')).to.equal(false)
-        expect(robotSimulator.place(2, '2w2', 'JIBrish')).to.equal(false)
+        expect(robotSimulator.PLACE(1, 2, 'JIBrish')).to.equal(false)
+        expect(robotSimulator.PLACE(122, 2, 'JIBrish')).to.equal(false)
+        expect(robotSimulator.PLACE(2, '2w2', 'JIBrish')).to.equal(false)
+        expect(robotSimulator.PLACE(1, 2, 'EAST')).to.be.equal(true)
 
         positionStub.restore()
         tableTopStub.restore()

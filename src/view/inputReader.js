@@ -1,5 +1,4 @@
 const validation = require('../../src/util/validation')
-const reader = require('../../src/util/input/reader')
 const robotSimulator = require('../../src/controller/robotSimlator')
 const readline = require('readline');
 
@@ -9,17 +8,35 @@ const rl = readline.createInterface({
 })
 
 module.exports = {
+ /**************
+     * @readLines
+     *  Reads line and finds out if the input line is 'END'
+     *  if end terminates the reader
+     * 
+     *  If isNextCMD false and if the line is not a valid command
+     *   that means this is a invalid 1st PLACE command.
+     *   So calls the reader again expecting a valid PLACE command
+     * 
+     * If isNextCMD is false that means it's a valid first command
+     *  so calls the PLACE command and calls reader for expecting next command
+     * 
+     * If isNextCMD true that means it already made a valid first command and readily expecting next command
+     *  Checks the input line is a valid command
+     *  If so pass to robotSimulator to make the command
+     *  Recursively listens to the next command
+     * 
+**************/
 
     readLines: (isNextCMD, cmd = 'Enter a command:     ') => {
         try{
             rl.question(cmd, (line) => {
-                line.toUpperCase() === 'END' && rl.close()
+                line.toUpperCase().trim() === 'END' && rl.close()
                 let validFirstPlaceCMD = validation.returnPlaceObject(line)
                 
                 // First command invalid so ask for PLACE again
                 if(!isNextCMD && !validFirstPlaceCMD){
                     module.exports.readLines(false, 'Enter a valid PLACE command to start     ')
-                // First cvalid PLACE cmd
+                // First valid PLACE cmd
                 }else if(!isNextCMD){
                     robotSimulator.PLACE(validFirstPlaceCMD.x, validFirstPlaceCMD.y, validFirstPlaceCMD.f)
                     module.exports.readLines(true, 'Enter a command to continue     ')
@@ -45,15 +62,7 @@ module.exports = {
                             break
                         default:
                             robotSimulator.REPORT()
-
                     }
-                    // console.log(`robotSimulator.${nextCMD}()`)
-                    // if(nextCMD === 'PLACE'){
-                    //     let place = validation.returnPlaceObject(line)
-                    //     place && robotSimulator.PLACE(place.x, place.y, place.f)
-                    // }else{
-                    //     validation.isValidCMD(nextCMD) && `robotSimulator.${nextCMD}()`
-                    // }
                     module.exports.readLines(true, 'Enter a commnd to continue     ')
                 }
             }) 
@@ -61,5 +70,9 @@ module.exports = {
             console.log(error)
             return('error occured while reading input')
         }
+    },
+
+    fileReader: () => {
+        
     }
 }

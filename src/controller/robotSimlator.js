@@ -1,6 +1,6 @@
 const tableTop = require('../../src/model/tableTop')
 const { LEFT, RIGHT, NORTH, SOUTH, EAST, WEST } = require('../../src/util/consts')
-const { isValidDirection, isValidMove } = require('../../src/util/validation')
+const { isValidDirection, isValidMove, isValidPlace } = require('../../src/util/validation')
 
 module.exports = {
      /**************
@@ -9,8 +9,9 @@ module.exports = {
      *  calls updateRobotPosition to place the robot into given position
      **************/
     PLACE: (xVal, yVal, facing) => {
-        console.log('--- PLACE ----')
-        tableTop.updateRobotPosition(xVal, yVal, facing)
+        let returnVal = isValidPlace(xVal, yVal, facing)
+        returnVal && tableTop.updateRobotPosition(xVal, yVal, facing)
+        return returnVal
     },
 
      /**************
@@ -41,8 +42,10 @@ module.exports = {
                 newPositon = currentPosition
         }
        
-        //newPositon.X || newPositon.Y && 
-        tableTop.updateRobotPosition(currentPosition.x, currentPosition.y, newPositon.f)
+        let x = newPositon.x ? newPositon.x : currentPosition.x
+        let y = newPositon.y ? newPositon.y : currentPosition.y
+        tableTop.updateRobotPosition(x, y, newPositon.f)
+        return({x: x, y: y, f: newPositon.f})
     },
 
      /**************
@@ -70,6 +73,7 @@ module.exports = {
                 newDir = currentPosition.f
         }
         tableTop.updateRobotPosition(currentPosition.x, currentPosition.y, newDir)
+        return newDir
     },
 
      /**************
