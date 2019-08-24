@@ -21,7 +21,6 @@ module.exports = {
      *  if the move is invalid, will not move the robot
      **************/
     MOVE: () => {
-        console.log('--- MOVE ----')
         let newPositon = tableTop.getRobotPosition()
         let currentPosition = tableTop.getRobotPosition()
        
@@ -81,6 +80,8 @@ module.exports = {
      *  logs the current robot position
      **************/
     REPORT: () => {
+        let position = tableTop.getRobotPosition()
+        console.log(`${position.x}, ${position.y}, ${position.f}`)
         return tableTop.getRobotPosition()
     }
 }

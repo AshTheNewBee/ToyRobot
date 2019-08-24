@@ -60,6 +60,9 @@ module.exports = {
                         case('RIGHT'):
                             robotSimulator.ROTATE('RIGHT')
                             break
+                        case('REPORT'):
+                            robotSimulator.REPORT()
+                            break
                         default:
                             robotSimulator.REPORT()
                     }

@@ -31,7 +31,6 @@ module.exports = {
             : direction === EAST ? currentPosition.x < tableTopLength.x 
             : direction === WEST ? currentPosition.x > 0
             : direction === SOUTH ? currentPosition.y > 0 : false
-            
         !isValidMove && console.log('Invalid Move')
         return isValidMove
     },
@@ -46,7 +45,8 @@ module.exports = {
         let tableTopLength = tableTop.getTableTop()
         let result = y < tableTopLength.y && x < tableTopLength.x
         !result && console.log('exceeds tabletop length of ', tableTop.getTableTop())
-        result = module.exports.isValidMove(f)
+        console.log('>>>dir: ', f)
+        result = module.exports.isValidDirection(f)
         return result
     },
 
@@ -55,19 +55,23 @@ module.exports = {
     // },
 
     returnPlaceObject: (placeCMD) => {
-        let placeObj
-        let placeStr = placeCMD && placeCMD.trim().toUpperCase().split(' ')
-        if(placeStr.length >= 4 ){
-            placeObj = module.exports.isValidCMD(placeStr[0]) 
-                && module.exports.isValidDirection(placeStr[3])
-                && module.exports.isValidPlace(placeStr[1], placeStr[2])
-                && placeStr[1] && placeStr[2] && placeStr[3] 
-                
-                ? { x: parseInt(placeStr[1]), y: parseInt(placeStr[2]), f: placeStr[3] } : false
-            return placeObj
-        }else{
-            return false
-        }
+        let placeObj, x, y, f
+        let cmd = placeCMD.split(' ')
+        let placeStr = cmd.length > 1 && cmd[1].split(',')
+
+        let place = cmd && cmd[0].toUpperCase().trim()
+        
+        let isValidParams = placeStr.length === 3 ?
+         [x = placeStr && placeStr[0],
+         y = placeStr && placeStr[1],
+         f = placeStr && placeStr[2].toUpperCase().trim()] : false
+
+        placeObj = isValidParams 
+            && module.exports.isValidCMD(place) 
+            && module.exports.isValidPlace(x, y, f)
+            ? { x: parseInt(x), y: parseInt(y), f: f } : false
+        return placeObj
+     
     },
 
     isValidCMD: (cmd) => {
