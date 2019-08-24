@@ -67,9 +67,16 @@ const {
       return result;
     },
   
-    // isValidValue: (value) => {
-    //     return value &&
-    // },
+  
+    /**************
+     * @returnPlaceObject
+     *  splits the place command with space and comma delimeters
+     *  checks if three params are passed for x, y, f
+     *  checks if the 'PLACE' command is valid
+     * 
+     * @return the valid place command with valid params if invalid returns false
+     *  
+     **************/
   
     returnPlaceObject: placeCMD => {
       let placeObj, x, y, f;
@@ -96,6 +103,13 @@ const {
       return placeObj;
     },
   
+    /**************
+     * @isValidCMD
+     *  validates the command
+     * 
+     * @return the command if it's valid
+     *  
+     **************/
     isValidCMD: cmd => {
       return cmd === PLACE ||
         cmd === MOVE ||

@@ -86,6 +86,11 @@ Runs the project and allows the users to enter the commands in command line
 Launches the test runner.
 
 ## Run the project
-    - clone the project
-    - run `npm install` to install the npms
-    - run `npm run start` to start the project
+    - Clone the project
+    - Run `npm install` to install the npms
+    - Run `npm run start` to start the project
+    
+### Read Line
+    - Reads the user input line from command line
+    - Type 'end' to terminate the read line
+    - Make a valid 'place' command to continue
