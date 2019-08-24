@@ -55,7 +55,6 @@ module.exports = {
           switch (nextCMD) {
             case 'PLACE':
               let validPlaceCMD = validation.returnPlaceObject(line);
-              console.log(validPlaceCMD);
               validPlaceCMD &&
                 robotSimulator.PLACE(
                   validPlaceCMD.x,
@@ -82,8 +81,8 @@ module.exports = {
         }
       });
     } catch (error) {
-      console.log(error);
-      return 'error occured while reading input';
+      console.log('error occured while reading input');
+      return false;
     }
   },
 

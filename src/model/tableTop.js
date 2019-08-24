@@ -28,7 +28,7 @@ module.exports = {
     position.x = xVal;
     position.y = yVal;
     position.f = facing;
-    console.log(' Current position: ', position);
+    //console.log(' Current position: ', position);
     return position;
   },
 
