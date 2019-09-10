@@ -36,22 +36,22 @@ module.exports = {
     let currentPosition = tableTop.getRobotPosition();
 
     switch (currentPosition.f) {
-      case 'NORTH':
+      case NORTH:
         newPositon.y = isValidMove(NORTH)
           ? currentPosition.y + 1
           : currentPosition.y;
         break;
-      case 'EAST':
+      case EAST:
         newPositon.x = isValidMove(EAST)
           ? currentPosition.x + 1
           : currentPosition.x;
         break;
-      case 'WEST':
+      case WEST:
         newPositon.x = isValidMove(WEST)
           ? currentPosition.x - 1
           : currentPosition.x;
         break;
-      case 'SOUTH':
+      case SOUTH:
         newPositon.y = isValidMove(SOUTH)
           ? currentPosition.y - 1
           : currentPosition.y;
@@ -76,16 +76,16 @@ module.exports = {
       currentPosition = tableTop.getRobotPosition();
 
     switch (currentPosition.f) {
-      case 'NORTH':
+      case NORTH:
         newDir = dir === LEFT ? WEST : EAST;
         break;
-      case 'EAST':
+      case EAST:
         newDir = dir === LEFT ? NORTH : SOUTH;
         break;
-      case 'WEST':
+      case WEST:
         newDir = dir === LEFT ? SOUTH : NORTH;
         break;
-      case 'SOUTH':
+      case SOUTH:
         newDir = dir === LEFT ? EAST : WEST;
         break;
       default:

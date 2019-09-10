@@ -24,7 +24,7 @@ const {
         dir === NORTH || dir === EAST || dir === WEST || dir === SOUTH
           ? true
           : false;
-      !isValidDir && console.log('Invalid Direction');
+      !isValidDir && console.log('!!! Invalid Direction');
       return isValidDir;
     },
   
@@ -48,7 +48,7 @@ const {
           : direction === SOUTH
           ? currentPosition.y > 0
           : false;
-      !isValidMove && console.log('Invalid Move');
+      !isValidMove && console.log('!!! Invalid Move');
       return isValidMove;
     },
   
@@ -60,9 +60,9 @@ const {
      **************/
     isValidPlace: (x, y, f) => {
       let tableTopLength = tableTop.getTableTop();
-      let result = y <= tableTopLength.y && x <= tableTopLength.x;
+      let result = (y <= tableTopLength.y && x <= tableTopLength.x) && (y  >= 0 && x >= 0);
       !result &&
-        console.log('exceeds tabletop length of ', tableTop.getTableTop());
+        console.log('!!! Subceed or exceed tabletop edge of ', tableTop.getTableTop());
       result = module.exports.isValidDirection(f);
       return result;
     },
