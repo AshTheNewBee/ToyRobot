@@ -63,8 +63,8 @@ const {
       let result = (y <= tableTopLength.y && x <= tableTopLength.x) && (y  >= 0 && x >= 0);
       !result &&
         console.log('!!! Subceed or exceed tabletop edge of ', tableTop.getTableTop());
-      result = module.exports.isValidDirection(f);
-      return result;
+      let bool = result ? module.exports.isValidDirection(f) : false
+      return bool;
     },
   
   

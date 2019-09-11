@@ -1,116 +1,275 @@
-let expect  = require('chai').expect
+const expect  = require('chai').expect
+const assert = require('chai').assert;
 const sinon = require('sinon')
 const robotSimulator = require('./../../src/controller/robotSimlator')
 const tableTop = require('./../../src/model/tableTop')
+const validation = require('./../../src/util/validation')
 
 describe('RobotSimulator', () => {
-    after(function () {
-        sinon.tableTop && sinon.tableTop.getTableTop().restore()
-        sinon.tableTop && sinon.tableTop.getRobotPosition().restore()
-    })
-    
+    let tableTopStub, positionStub, updateRobotPositionSpy, isValidPlaceStub
+
+    afterEach(function () {
+        tableTopStub.restore()
+        positionStub.restore()
+        updateRobotPositionSpy && updateRobotPositionSpy.restore()
+        isValidPlaceStub && isValidPlaceStub.restore()
+    });
+
     //--------------------------- MOVE ------------------------------------------------
-    it('should move the toy robot one unit forward in the direction it is currently facing', () => { 
-        sinon.tableTop && sinon.tableTop.getTableTop().restore()
-        sinon.tableTop && sinon.tableTop.getRobotPosition().restore()
-        let tableTopStub = sinon.stub(tableTop, 'getTableTop').callsFake(function fakeFn() {
+    it('should move the toy robot one unit towards NORTH ', () => { 
+        tableTopStub = sinon.stub(tableTop, 'getTableTop').callsFake(function fakeFn() {
             return {x: 5, y: 5 }
         })
-
-        //Move NORTH
-        let positionStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
+        
+        positionStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
             return {x: 0, y: 0, f: 'NORTH'}
         })
+        
         expect(robotSimulator.MOVE()).to.deep.include({ x: 0, y: 1, f: 'NORTH' })
-        positionStub.restore()
-
-        //Move EAST
+        
+    })
+    
+    it('should move the toy robot one unit towards EAST ', () => { 
+        tableTopStub = sinon.stub(tableTop, 'getTableTop').callsFake(function fakeFn() {
+            return {x: 5, y: 5 }
+        })
         positionStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
             return {x: 0, y: 0, f: 'EAST'}
         })
         expect(robotSimulator.MOVE()).to.deep.include({ x: 1, y: 0, f: 'EAST' })
-        positionStub.restore()
+    })
 
-        ////Move WEST
+    it('should not move the toy robot one unit towards EAST if it excess the tabletop position ', () => { 
+        tableTopStub = sinon.stub(tableTop, 'getTableTop').callsFake(function fakeFn() {
+            return {x: 5, y: 5 }
+        })
+        positionStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
+            return {x: 5, y: 5, f: 'EAST'}
+        })
+        expect(robotSimulator.MOVE()).to.deep.include({ x: 5, y: 5, f: 'EAST' })
+    })
+
+
+    it('should move the toy robot one unit towards WEST', () => { 
+        tableTopStub = sinon.stub(tableTop, 'getTableTop').callsFake(function fakeFn() {
+            return {x: 5, y: 5 }
+        })
         positionStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
             return {x: 0, y: 0, f: 'WEST'}
         })
         expect(robotSimulator.MOVE()).to.deep.include({ x: 0, y: 0, f: 'WEST' })
-        positionStub.restore()
+    })
 
-        //Move SOUTH
+    it('should not move the toy robot one unit towards WEST if robot is in the edge of tabletop position ', () => { 
+        tableTopStub = sinon.stub(tableTop, 'getTableTop').callsFake(function fakeFn() {
+            return {x: 5, y: 5 }
+        })
+        positionStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
+            return {x: 0, y: 0, f: 'WEST'}
+        })
+        expect(robotSimulator.MOVE()).to.deep.include({ x: 0, y: 0, f: 'WEST' })
+    })
+
+    it('should move the toy robot one unit towards SOUTH', () => {
+        tableTopStub = sinon.stub(tableTop, 'getTableTop').callsFake(function fakeFn() {
+            return {x: 5, y: 5 }
+        }) 
         positionStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
             return {x: 0, y: 0, f: 'SOUTH'}
         })
         expect(robotSimulator.MOVE()).to.deep.include({ x: 0, y: 0, f: 'SOUTH' })
-        
-        positionStub.restore()
-        tableTopStub.restore()
     })
 
+    it('should not move the toy robot one unit towards SOUTH if robot is in the edge of tabletop position ', () => { 
+        tableTopStub = sinon.stub(tableTop, 'getTableTop').callsFake(function fakeFn() {
+            return {x: 5, y: 5 }
+        })
+        positionStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
+            return {x: 0, y: 0, f: 'SOUTH'}
+        })
+        expect(robotSimulator.MOVE()).to.deep.include({ x: 0, y: 0, f: 'SOUTH' })
+    })
 
     it('robot must not fall off the table during movement', () => {
-        let positionStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
+        positionStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
             return {x: 0, y: 5, f: 'NORTH'}
         })
         
-        let tableTopStub = sinon.stub(tableTop, 'getTableTop').callsFake(function fakeFn() {
+        tableTopStub = sinon.stub(tableTop, 'getTableTop').callsFake(function fakeFn() {
             return {x: 5, y: 5 }
         })
         
         expect(robotSimulator.MOVE()).to.deep.include({ x: 0, y: 5, f: 'NORTH' })
-        positionStub.restore()
-        tableTopStub.restore()
     })
 
+    it('should call updateRobotPosition to update the position with MOVE', () => {
+        positionStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
+            return {x: 0, y: 5, f: 'NORTH'}
+        })
+        
+        tableTopStub = sinon.stub(tableTop, 'getTableTop').callsFake(function fakeFn() {
+            return {x: 5, y: 5 }
+        })
+
+        updateRobotPositionSpy = sinon.spy(tableTop, "updateRobotPosition");
+        robotSimulator.MOVE()
+        expect(tableTop.updateRobotPosition.calledWith(0, 5, 'NORTH')).to.be.true
+        expect(tableTop.updateRobotPosition.calledOnce).to.be.true;
+    })
 
     //--------------------------- LEFT ------------------------------------------------
     it('should rotate robot 90 degrees to the Left', () => {
-        let positionStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
+        positionStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
             return {x: 1, y: 1, f: 'NORTH'}
         })
         
         expect(robotSimulator.ROTATE('LEFT')).to.be.equal('WEST')
-        positionStub.restore()
     })
 
 
     //--------------------------- RIGHT ------------------------------------------------
     it('should rotate robot 90 degrees to the Right', () => {
-        let positionStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
+        positionStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
             return {x: 1, y: 1, f: 'NORTH'}
         })
 
         expect(robotSimulator.ROTATE('RIGHT')).to.be.equal('EAST')
-        positionStub.restore()
     })
 
 
     //--------------------------- REPORT ------------------------------------------------
     it('should report the x, y and facing position', () => {
-        let positionStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
+        positionStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
             return {x: 4, y: 3, f: 'NORTH'}
         })
 
         expect(robotSimulator.REPORT()).to.deep.include({ x: 4, y: 3, f: 'NORTH'})
-        positionStub.restore()
     })
 
     //--------------------------- PLACE ------------------------------------------------
     it('should place the robot in valid position', () => {
-        let tableTopStub = sinon.stub(tableTop, 'getTableTop').callsFake(function fakeFn() {
+        tableTopStub = sinon.stub(tableTop, 'getTableTop').callsFake(function fakeFn() {
             return {x: 5, y: 5 }
         })
-        let positionStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
+        positionStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
+            return {x: 0, y: 0, f: 'SOUTH'}
+        })
+
+        expect(robotSimulator.PLACE(1, 2, 'EAST')).to.be.equal(true)
+    })
+
+    it('should not place the robot with invalid params', () => {
+        tableTopStub = sinon.stub(tableTop, 'getTableTop').callsFake(function fakeFn() {
+            return {x: 5, y: 5 }
+        })
+        positionStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
             return {x: 0, y: 0, f: 'SOUTH'}
         })
 
         expect(robotSimulator.PLACE(1, 2, 'JIBrish')).to.equal(false)
         expect(robotSimulator.PLACE(122, 2, 'JIBrish')).to.equal(false)
         expect(robotSimulator.PLACE(2, '2w2', 'JIBrish')).to.equal(false)
-        expect(robotSimulator.PLACE(1, 2, 'EAST')).to.be.equal(true)
+    })
 
-        positionStub.restore()
-        tableTopStub.restore()
+    it('should call updateRobotPosition func with valid params', () => {
+        tableTopStub = sinon.stub(tableTop, 'getTableTop').callsFake(function fakeFn() {
+            return {x: 5, y: 5 }
+        })
+        positionStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
+            return {x: 0, y: 0, f: 'SOUTH'}
+        })
+        isValidPlaceStub = sinon.stub(validation, 'isValidPlace').callsFake(function fakeFn() {
+            return true
+        })
+
+        updateRobotPositionSpy = sinon.spy(tableTop, "updateRobotPosition");
+        robotSimulator.PLACE(1, 2, 'EAST')
+        expect(tableTop.updateRobotPosition.calledOnce).to.be.true
+    })
+
+    //--------------------------- ROTATE ------------------------------------------------
+    it('should rotate the robot 90 degrees to the LEFT while robot facing NORTH', () => {
+        tableTopStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
+            return {x: 5, y: 5,  f:'NORTH' }
+        })
+
+        expect(robotSimulator.ROTATE('LEFT')).to.be.equal('WEST')
+    })
+
+    it('should rotate the robot 90 degrees to the RIGHT while robot faing NORTH', () => {
+        tableTopStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
+            return {x: 5, y: 5,  f:'NORTH' }
+        })
+
+        expect(robotSimulator.ROTATE('RIGHT')).to.be.equal('EAST')
+    })
+
+    it('should rotate the robot 90 degrees to the RIGHT while robot faing EAST', () => {
+        tableTopStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
+            return {x: 5, y: 5,  f:'EAST' }
+        })
+
+        expect(robotSimulator.ROTATE('RIGHT')).to.be.equal('SOUTH')
+    })
+
+    it('should rotate the robot 90 degrees to the LEFT while robot faing EAST', () => {
+        tableTopStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
+            return {x: 5, y: 5,  f:'EAST' }
+        })
+
+        expect(robotSimulator.ROTATE('LEFT')).to.be.equal('NORTH')
+    })
+
+    it('should rotate the robot 90 degrees to the LEFT while robot faing WEST', () => {
+        tableTopStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
+            return {x: 5, y: 5,  f:'WEST' }
+        })
+
+        expect(robotSimulator.ROTATE('LEFT')).to.be.equal('SOUTH')
+    })
+
+    it('should rotate the robot 90 degrees to the RIGHT while robot faing WEST', () => {
+        tableTopStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
+            return {x: 5, y: 5,  f:'WEST' }
+        })
+
+        expect(robotSimulator.ROTATE('RIGHT')).to.be.equal('NORTH')
+    })
+
+    it('should rotate the robot 90 degrees to the RIGHT while robot faing SOUTH', () => {
+        tableTopStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
+            return {x: 5, y: 5,  f:'SOUTH' }
+        })
+
+        expect(robotSimulator.ROTATE('RIGHT')).to.be.equal('WEST')
+    })
+
+    it('should rotate the robot 90 degrees to the LEFT while robot faing SOUTH', () => {
+        tableTopStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
+            return {x: 5, y: 5,  f:'SOUTH' }
+        })
+
+        expect(robotSimulator.ROTATE('LEFT')).to.be.equal('EAST')
+    })
+
+    // it('should not rotate the robot with invalid rotate dirction', () => {
+    //     tableTopStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
+    //         return {x: 5, y: 5,  f:'SOUTH' }
+    //     })
+    //     console.log('****8')
+    //     console.log(robotSimulator.ROTATE('worngDir'))
+    //     expect(robotSimulator.ROTATE('worngDir')).to.be.equal('SOUTH')
+    // })
+
+    it('should call updateRobotPosition func with valid params', () => {
+        tableTopStub = sinon.stub(tableTop, 'getRobotPosition').callsFake(function fakeFn() {
+            return {x: 5, y: 5,  f:'SOUTH' }
+        })
+
+        updateRobotPositionSpy = sinon.spy(tableTop, "updateRobotPosition");
+        robotSimulator.ROTATE('LEFT')
+        //expect(tableTop.updateRobotPosition.calledOnce).to.be.true
+       console.log('-->>',expect(tableTop.updateRobotPosition.calledWith(5, 5, 'EAST')).to.be.true)
+       expect(tableTop.updateRobotPosition.calledWith(5, 5, 'EAST')).to.be.true
     })
 })
