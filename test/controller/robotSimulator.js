@@ -1,7 +1,7 @@
 const expect  = require('chai').expect
 const assert = require('chai').assert;
 const sinon = require('sinon')
-const robotSimulator = require('./../../src/controller/robotSimlator')
+const robotSimulator = require('../../src/controller/robotSimulator')
 const tableTop = require('./../../src/model/tableTop')
 const validation = require('./../../src/util/validation')
 
@@ -266,10 +266,9 @@ describe('RobotSimulator', () => {
             return {x: 5, y: 5,  f:'SOUTH' }
         })
 
-        updateRobotPositionSpy = sinon.spy(tableTop, "updateRobotPosition");
+        updateRobotPositionSpy = sinon.spy(tableTop, "updateRobotPosition")
         robotSimulator.ROTATE('LEFT')
         //expect(tableTop.updateRobotPosition.calledOnce).to.be.true
-       console.log('-->>',expect(tableTop.updateRobotPosition.calledWith(5, 5, 'EAST')).to.be.true)
-       expect(tableTop.updateRobotPosition.calledWith(5, 5, 'EAST')).to.be.true
+        expect(tableTop.updateRobotPosition.calledWith(5, 5, 'EAST')).to.be.true
     })
 })

@@ -1,5 +1,5 @@
 const validation = require('../../src/util/validation');
-const robotSimulator = require('../../src/controller/robotSimlator');
+const robotSimulator = require('../controller/robotSimulator');
 const readline = require('readline');
 
 const rl = readline.createInterface({
@@ -32,6 +32,7 @@ module.exports = {
       rl.question(cmd, line => {
         if(line.toUpperCase().trim() === 'END'){
             rl.close()
+            process.exit()
         }else{
             let validFirstPlaceCMD = validation.returnPlaceObject(line);
 
@@ -87,7 +88,5 @@ module.exports = {
       console.log('error occured while reading input');
       return false;
     }
-  },
-
-  fileReader: () => {}
+  }
 };
